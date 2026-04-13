@@ -1,0 +1,4 @@
+model,ECE_overall,ECE_rare,overconf_rate,n_rare_slices
+central,0.32499,0.47105,0.6432,1832
+fl_iid,0.02607,0.08048,0.0161,236
+fl_rus,0.03893,0.08119,0.0154,234

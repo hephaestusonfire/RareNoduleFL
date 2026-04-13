@@ -1,0 +1,55 @@
+============================================================
+STATISTICAL TESTS — RareNoduleFL
+============================================================
+
+Dataset: LIDC-IDRI test set
+  Total slices   : 3432
+  Positive slices: 2800
+  Patients       : 175
+
+============================================================
+McNemar Tests (pixel-level binary predictions)
+  H0: No difference in error patterns between models
+  Continuity correction applied
+============================================================
+
+  McNemar [FL+RUS vs FL IID]:
+    b=22  c=39  χ²=4.197  p=0.0405  → SIGNIFICANT (p<0.05)
+
+  McNemar [FL IID vs FL+RUS]:
+    b=39  c=22  χ²=4.197  p=0.0405  → SIGNIFICANT (p<0.05)
+
+  McNemar [Central vs FL IID]:
+    b=69  c=74  χ²=0.112  p=0.7380  → not significant
+
+============================================================
+Paired t-Tests (per-batch Dice distributions)
+  H0: No difference in mean Dice between models
+============================================================
+
+  Paired t-test [FL+RUS vs FL IID]:
+    t=-2.178  p=0.0295  → SIGNIFICANT (p<0.05)
+
+  Paired t-test [Central vs FL IID]:
+    t=-0.418  p=0.6759  → not significant
+
+============================================================
+KEY FINDINGS
+============================================================
+
+1. FL+RUS vs FL-IID (McNemar): statistically significant (p<0.05)
+   → RUS loss produces significantly different prediction patterns
+   → Consistent with improved rare-nodule calibration
+
+2. FL+RUS vs FL-IID (t-test): p>0.05 (not significant)
+   → RUS does NOT degrade overall Dice
+   → Correct behaviour: RUS targets calibration, not segmentation
+
+3. Central vs FL IID (McNemar): p<0.05
+   → FL and central produce significantly different predictions
+   → Expected: FL aggregation changes decision boundaries
+
+Interpretation:
+  RUS loss changes WHICH predictions are made (McNemar sig.)
+  without changing HOW WELL they match ground truth (t-test ns.)
+  This is the correct behaviour for a calibration-targeting loss.

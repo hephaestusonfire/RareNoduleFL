@@ -1,0 +1,5 @@
+Experiment,Setting,RUS,Non-IID,Dice,Sensitivity,Precision,F1,ECE,Best_Round
+Central U-Net (baseline),"All data, no FL",No,No,0.8445,0.9089,0.7895,0.7581,0.0103,ep64
+FL IID — FedAvg,"5 clients, equal dist, σ=15HU",No,No,0.7674,0.8214,0.8272,0.895,0.00063,14
+FL Non-IID + RUS,"Skewed dist, σ=5-25HU",Yes,Yes,0.7664,0.8128,0.8218,0.8928,0.00065,6
+FL Non-IID (no RUS),"Skewed dist, σ=5-25HU",No,Yes,0.767,0.8112,0.8112,0.804,0.00065,7

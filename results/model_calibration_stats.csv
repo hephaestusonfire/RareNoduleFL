@@ -1,0 +1,4 @@
+model,ECE,mean_entropy
+central,0.0103,
+fl_iid,0.00063,
+fl_rus,0.00065,

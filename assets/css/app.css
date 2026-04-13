@@ -1,0 +1,788 @@
+/* ============================================================
+   RareNoduleFL — Erudite Glass (semantic tokens, text-safe)
+   Light mode: optional #000 body copy block at end (explicit, scoped).
+   Surfaces use rgba, not opacity on text parents.
+   ============================================================ */
+
+:root {
+  /* Surfaces — light */
+  --bg: #edf2f5;
+  --bg-elevated: #f7fafb;
+  --panel: rgba(255, 255, 255, 0.78);
+  --panel-strong: rgba(255, 255, 255, 0.92);
+  --panel-soft: rgba(244, 248, 250, 0.96);
+  --glass: rgba(220, 232, 238, 0.4);
+  --border: rgba(55, 78, 89, 0.14);
+  --border-soft: rgba(55, 78, 89, 0.08);
+  --border-accent: rgba(21, 154, 146, 0.26);
+
+  /* Text — light */
+  --text: #14232d;
+  --text-strong: #0b1820;
+  --text-muted: #526671;
+  --text-soft: #70838d;
+  --text-inverse: #f5fbfc;
+  --accent-text: #0f766e;
+  --warning-text: #6f4310;
+  --success-text: #176b4d;
+
+  /* UI chrome (fills, not body text) */
+  --accent: #159a92;
+  --accent-2: #1cb7ac;
+  --warning-surface: rgba(154, 106, 26, 0.12);
+
+  /* Code surfaces (dedicated; never inherit panel text) */
+  --code-bg: #0f1a1f;
+  --code-text: #eaf4f6;
+
+  --shadow-sm: 0 2px 10px rgba(8, 19, 25, 0.06);
+  --shadow-md: 0 8px 24px rgba(8, 19, 25, 0.1);
+  --shadow-lg: 0 14px 36px rgba(8, 19, 25, 0.12);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #081319;
+    --bg-elevated: #0f1d26;
+    --panel: rgba(15, 29, 38, 0.78);
+    --panel-strong: rgba(18, 34, 45, 0.9);
+    --panel-soft: rgba(23, 39, 50, 0.95);
+    --glass: rgba(40, 69, 81, 0.25);
+    --border: rgba(120, 176, 183, 0.16);
+    --border-soft: rgba(120, 176, 183, 0.08);
+    --border-accent: rgba(41, 193, 182, 0.26);
+
+    --text: #e8f2f4;
+    --text-strong: #f4fbfc;
+    --text-muted: #afc1c8;
+    --text-soft: #7f949d;
+    --text-inverse: #081319;
+    --accent-text: #7ce2d7;
+    --warning-text: #f0c36d;
+    --success-text: #79d7a5;
+
+    --accent: #29c1b6;
+    --accent-2: #5dd4cc;
+    --warning-surface: rgba(240, 195, 109, 0.12);
+
+    --code-bg: #060d12;
+    --code-text: #edf7f9;
+
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.42);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.48);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body,
+.gradio-container {
+  background: radial-gradient(120% 80% at 10% 0%, var(--bg-elevated), var(--bg));
+  color: var(--text);
+  font-family: "Inter", "IBM Plex Sans", system-ui, sans-serif;
+  line-height: 1.62;
+  /* Never fade entire UI text via opacity */
+  opacity: 1;
+}
+
+/* ── Base content text (explicit; no accidental inheritance) ── */
+.gradio-container :where(p) {
+  color: var(--text);
+}
+
+.gradio-container :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--text-strong);
+  font-weight: 650;
+}
+
+.gradio-container :where(small) {
+  color: var(--text-soft);
+  font-size: 0.88em;
+}
+
+.gradio-container :where(strong, b) {
+  color: var(--text-strong);
+  font-weight: 650;
+}
+
+.gradio-container :where(em, i) {
+  color: var(--text);
+}
+
+.gradio-container :where(li) {
+  color: var(--text);
+}
+
+.gradio-container :where(a) {
+  color: var(--accent-text);
+  text-underline-offset: 3px;
+}
+
+.gradio-container :where(a:hover) {
+  color: var(--accent);
+}
+
+/* div/span: default to body text; nested components override below */
+.gradio-container :where(.block, .form, .panel-wrap) :where(span, div) {
+  color: inherit;
+}
+
+/* ── Hero: dark scholarly band — inverse text only here ── */
+.hero-header {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--bg) 18%, #0c1f28),
+    color-mix(in srgb, var(--accent) 22%, #0a161d)
+  );
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-8) var(--space-9);
+  margin-bottom: var(--space-7);
+}
+
+.hero-title,
+.hero-subtitle,
+.hero-header :where(p, span, a, strong) {
+  color: var(--text-inverse) !important;
+}
+
+.hero-title {
+  font-family: "Source Serif 4", "Instrument Serif", Georgia, serif;
+  font-size: clamp(1.85rem, 2.4vw, 2.65rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.hero-subtitle {
+  font-size: 1.02rem;
+  opacity: 1;
+  color: color-mix(in srgb, var(--text-inverse) 88%, transparent) !important;
+}
+
+.hero-header a {
+  text-decoration-color: color-mix(in srgb, var(--text-inverse) 45%, transparent);
+}
+
+/* ── KPI / stat cards (Overview) ── */
+.stat-card {
+  background: var(--panel-strong) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5) var(--space-6);
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 1;
+}
+
+.stat-value {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-strong) !important;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted) !important;
+  margin-top: var(--space-2);
+  line-height: 1.45;
+}
+
+/* ── Tabs (segmented glass) ── */
+.gradio-tabs > .tab-nav {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(14px);
+  padding: var(--space-2) !important;
+  gap: 6px;
+  opacity: 1;
+}
+
+.gradio-tabs > .tab-nav button {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid transparent !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  font-size: 0.86rem !important;
+  letter-spacing: 0.02em !important;
+  padding: 10px 16px !important;
+  background: transparent !important;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  opacity: 1;
+}
+
+.gradio-tabs > .tab-nav button:hover {
+  color: var(--text-strong) !important;
+  border-color: var(--border-soft) !important;
+  background: var(--glass) !important;
+}
+
+.gradio-tabs > .tab-nav button.selected {
+  background: var(--panel-strong) !important;
+  color: var(--text-strong) !important;
+  border-color: var(--border-accent) !important;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-inverse) 18%, transparent);
+}
+
+/* ── Glass panels ── */
+.eg-panel,
+.section-card,
+.gradio-gallery,
+.gradio-dataframe,
+.gradio-image {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  opacity: 1;
+}
+
+.eg-panel {
+  padding: var(--space-6);
+  margin: var(--space-4) 0;
+}
+
+.eg-panel-strong {
+  background: var(--panel-strong) !important;
+  box-shadow: var(--shadow-md);
+}
+
+.eg-panel-soft {
+  background: var(--panel-soft) !important;
+}
+
+.eg-section-title {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--text-strong) !important;
+  margin-bottom: var(--space-3);
+  letter-spacing: 0.01em;
+}
+
+.eg-subtitle {
+  color: var(--text-muted) !important;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.eg-body {
+  color: var(--text) !important;
+  margin: var(--space-2) 0;
+  line-height: 1.65;
+}
+
+.eg-body strong {
+  color: var(--text-strong) !important;
+}
+
+.eg-caption {
+  color: var(--text-soft) !important;
+  font-size: 0.86rem;
+  margin-top: var(--space-3);
+  line-height: 1.55;
+}
+
+/* KPI grid in Results */
+.eg-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
+  gap: var(--space-4);
+}
+
+.eg-kpi {
+  background: var(--panel-strong);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.eg-kpi-value {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.62rem;
+  line-height: 1.12;
+  font-weight: 700;
+  color: var(--text-strong) !important;
+}
+
+.eg-kpi-label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted) !important;
+  margin-top: 8px;
+  line-height: 1.45;
+}
+
+.eg-kv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(170px, 1fr));
+  gap: 10px 18px;
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.eg-k {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-soft) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.eg-v {
+  display: block;
+  font-weight: 650;
+  color: var(--text) !important;
+  margin-top: 2px;
+}
+
+.eg-callout {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--glass) 85%, var(--panel-soft));
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  color: var(--text) !important;
+  line-height: 1.6;
+}
+
+.eg-list li {
+  margin: 6px 0;
+  color: var(--text) !important;
+}
+
+/* Availability badges (no inline hex) */
+.eg-avail {
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.eg-avail-live {
+  color: var(--accent-text) !important;
+}
+
+.eg-avail-off {
+  color: var(--warning-text) !important;
+}
+
+/* Secondary label next to availability */
+.eg-model-name {
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-soft) !important;
+}
+
+/* ── Markdown ── */
+.gradio-markdown {
+  color: var(--text) !important;
+}
+
+.gradio-markdown :where(p, li, td) {
+  color: var(--text) !important;
+}
+
+.gradio-markdown :where(h1, h2, h3, h4) {
+  color: var(--text-strong) !important;
+}
+
+.gradio-markdown :where(strong, b) {
+  color: var(--text-strong) !important;
+}
+
+.gradio-markdown :where(a) {
+  color: var(--accent-text) !important;
+}
+
+.gradio-markdown :where(blockquote) {
+  color: var(--text) !important;
+  border-left: 3px solid var(--border-accent) !important;
+  background: color-mix(in srgb, var(--glass) 80%, transparent) !important;
+}
+
+.gradio-markdown :not(pre) > code {
+  background: color-mix(in srgb, var(--code-bg) 15%, var(--panel-strong)) !important;
+  color: var(--text-strong) !important;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.84em;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ── Code / file tree blocks ── */
+.eg-code,
+.gradio-markdown pre,
+.gradio-markdown pre code {
+  background: var(--code-bg) !important;
+  color: var(--code-text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace !important;
+  font-size: 0.83rem !important;
+  line-height: 1.62 !important;
+  padding: var(--space-4) !important;
+  white-space: pre-wrap;
+}
+
+.gradio-markdown code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ── Buttons ── */
+button.primary {
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent-2) 75%, #0a3d3a)) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--border-accent)) !important;
+  color: var(--text-inverse) !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 650 !important;
+  opacity: 1;
+}
+
+button.secondary {
+  background: var(--panel-strong) !important;
+  color: var(--text-strong) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 600 !important;
+  opacity: 1;
+}
+
+.gradio-container :where(button:not(.primary):not(.secondary)) {
+  color: var(--text-strong) !important;
+  background: var(--panel-strong) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.gradio-container :where(button:disabled) {
+  opacity: 1;
+  color: var(--text-soft) !important;
+  border-color: var(--border-soft) !important;
+}
+
+/* ── Inputs ── */
+.gradio-textbox textarea,
+.gradio-textbox input,
+.gradio-dropdown,
+.gradio-slider,
+.gradio-file {
+  background: var(--panel-strong) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: var(--radius-md) !important;
+  opacity: 1;
+}
+
+.gradio-textbox textarea,
+.gradio-textbox input {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.84rem;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-soft) !important;
+  opacity: 1;
+}
+
+label span,
+.wrap label span {
+  color: var(--text-muted) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-weight: 650 !important;
+}
+
+/* ── Tables ── */
+.gradio-markdown table,
+.gradio-dataframe table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.gradio-markdown th,
+.gradio-dataframe th {
+  background: color-mix(in srgb, var(--panel-strong) 92%, var(--accent)) !important;
+  color: var(--text-strong) !important;
+  border-bottom: 1px solid var(--border) !important;
+  font-weight: 700 !important;
+  padding: 11px 14px !important;
+  text-align: left !important;
+  font-size: 0.88rem;
+}
+
+.gradio-markdown td,
+.gradio-dataframe td {
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border-soft) !important;
+  padding: 10px 14px !important;
+  font-size: 0.88rem;
+}
+
+.gradio-dataframe tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--panel-soft) 88%, transparent) !important;
+}
+
+.gradio-dataframe tr:hover td {
+  background: color-mix(in srgb, var(--glass) 65%, var(--panel)) !important;
+}
+
+/* ── Gallery / images ── */
+.gradio-gallery :where(figcaption, .caption) {
+  color: var(--text-muted) !important;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.gradio-image :where(label, .label) {
+  color: var(--text-muted) !important;
+}
+
+/* ── Warnings / disclaimers ── */
+.disclaimer,
+.eg-disclaimer-inline {
+  background: color-mix(in srgb, var(--warning-surface) 100%, var(--panel-strong)) !important;
+  color: var(--warning-text) !important;
+  border: 1px solid color-mix(in srgb, var(--warning-text) 28%, transparent) !important;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  font-weight: 550;
+}
+
+.disclaimer strong,
+.eg-disclaimer-inline strong {
+  color: var(--warning-text) !important;
+}
+
+/* ── Footer ── */
+.app-footer {
+  color: var(--text-soft) !important;
+  border-top: 1px solid var(--border-soft);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  font-size: 0.82rem;
+  opacity: 1;
+}
+
+@media (max-width: 1100px) {
+  .eg-kv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Light mode: body copy solid black (readability request)
+   Dark mode unchanged.
+   ============================================================ */
+@media (prefers-color-scheme: light) {
+  :root {
+    --text: #000000;
+    --text-strong: #000000;
+    --text-muted: #000000;
+    --text-soft: #000000;
+    --accent-text: #000000;
+    --warning-text: #000000;
+    --success-text: #000000;
+    --code-bg: #eceff1;
+    --code-text: #000000;
+  }
+
+  body,
+  .gradio-container {
+    color: #000000 !important;
+  }
+
+  /* Hero: light glass, black text (no inverse-on-dark) */
+  .hero-header {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--panel-strong) 92%, var(--bg)),
+      color-mix(in srgb, var(--panel) 88%, #d4e8e6)
+    ) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  .hero-title,
+  .hero-subtitle,
+  .hero-header :where(p, span, a, strong) {
+    color: #000000 !important;
+  }
+
+  .hero-header a {
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.35);
+  }
+
+  /* Markdown & structured copy (Overview, Results, etc.) */
+  .gradio-markdown,
+  .gradio-markdown :where(p, li, td, th, h1, h2, h3, h4, h5, h6, strong, b, em, blockquote, span) {
+    color: #000000 !important;
+  }
+
+  .gradio-markdown :where(a) {
+    color: #000000 !important;
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.35);
+  }
+
+  .gradio-markdown :not(pre) > code {
+    color: #000000 !important;
+    background: #e8ecef !important;
+    border-color: #cfd6dc !important;
+  }
+
+  .gradio-markdown pre,
+  .gradio-markdown pre code,
+  .eg-code {
+    background: var(--code-bg) !important;
+    color: var(--code-text) !important;
+    border-color: #cfd6dc !important;
+  }
+
+  /* KPI / stat cards */
+  .stat-value,
+  .stat-label {
+    color: #000000 !important;
+  }
+
+  .eg-section-title,
+  .eg-body,
+  .eg-caption,
+  .eg-subtitle,
+  .eg-k,
+  .eg-v,
+  .eg-kpi-value,
+  .eg-kpi-label,
+  .eg-callout,
+  .eg-list li {
+    color: #000000 !important;
+  }
+
+  .eg-avail-live,
+  .eg-avail-off,
+  .eg-model-name {
+    color: #000000 !important;
+  }
+
+  /* Tables */
+  .gradio-markdown th,
+  .gradio-dataframe th,
+  .gradio-markdown td,
+  .gradio-dataframe td {
+    color: #000000 !important;
+  }
+
+  /* Tabs */
+  .gradio-tabs > .tab-nav button,
+  .gradio-tabs > .tab-nav button.selected,
+  .gradio-tabs > .tab-nav button:hover {
+    color: #000000 !important;
+  }
+
+  /* Forms: labels, inputs, placeholders, dropdowns */
+  label span,
+  .wrap label span {
+    color: #000000 !important;
+  }
+
+  .gradio-textbox textarea,
+  .gradio-textbox input,
+  .gradio-dropdown,
+  .gradio-slider,
+  .gradio-file {
+    color: #000000 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #000000 !important;
+    opacity: 0.65;
+  }
+
+  /* Upload / dropzone helper text */
+  .gradio-file,
+  .gradio-file [class*="upload"],
+  .gradio-file [class*="wrap"],
+  .gradio-file label,
+  .file-preview,
+  [class*="upload"],
+  [class*="drop"] {
+    color: #000000 !important;
+  }
+
+  .gradio-file small {
+    color: #000000 !important;
+  }
+
+  /* Buttons: primary = dark text on light fill */
+  button.primary {
+    color: #000000 !important;
+    background: linear-gradient(180deg, #ffffff, #e8eef0) !important;
+    border: 1px solid #000000 !important;
+  }
+
+  button.secondary,
+  .gradio-container button:not(.primary) {
+    color: #000000 !important;
+    background: #ffffff !important;
+    border: 1px solid #000000 !important;
+  }
+
+  /* Warnings / disclaimers */
+  .disclaimer,
+  .eg-disclaimer-inline,
+  .disclaimer strong,
+  .eg-disclaimer-inline strong {
+    color: #000000 !important;
+  }
+
+  /* Gallery / image labels */
+  .gradio-gallery :where(figcaption, .caption),
+  .gradio-image :where(label, .label) {
+    color: #000000 !important;
+  }
+
+  .app-footer {
+    color: #000000 !important;
+  }
+}
