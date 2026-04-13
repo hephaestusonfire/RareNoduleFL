@@ -7,6 +7,7 @@ Tabs: Overview | Inference | Compare | Explainability | Results | About
 """
 
 from pathlib import Path
+import os
 import numpy as np
 import gradio as gr
 from PIL import Image
@@ -27,6 +28,8 @@ from app_core.results_loader import (
     load_all_figures, load_ablation_table,
     load_statistical_tests, build_metrics_summary_html,
     load_result_image,
+    list_xai_individual_images,
+    load_image_file,
 )
 
 # ── Startup ────────────────────────────────────────────────────────────────────
@@ -35,6 +38,11 @@ ensure_samples_exist()
 availability = check_availability()
 print("Checkpoints:", {k: ("✅" if v else "❌") for k, v in availability.items()})
 preload_all()
+
+# XAI individual image registry (results/xai_individual/*.png)
+_xai_pairs = list_xai_individual_images()
+XAI_INDIVIDUAL_CHOICES = [label for label, _ in _xai_pairs]
+XAI_INDIVIDUAL_MAP = {label: path for label, path in _xai_pairs}
 
 # ── CSS ────────────────────────────────────────────────────────────────────────
 _css_path = Path(__file__).parent / "assets" / "css" / "app.css"
@@ -120,6 +128,14 @@ def cb_compare(image_input, sample_name, threshold):
 
 
 def cb_xai_sample(name):
+    # Prefer explicit results/xai_individual selection if available.
+    p = XAI_INDIVIDUAL_MAP.get(name)
+    if p:
+        img = load_image_file(p)
+        if img is not None:
+            return img
+
+    # Fallback to legacy sample→figure mapping.
     img = get_xai_figure(name)
     if img is None:
         img = load_result_image("gradcam_panels")
@@ -327,9 +343,14 @@ with gr.Blocks(
               <p class="eg-body"><strong>Entropy maps (Figure 4b):</strong> uncertainty rises near ambiguous boundaries and clinically sensitive regions.</p>
             </div>
             """)
-            xai_sel = gr.Dropdown(choices=get_sample_names(),
-                                   value=get_sample_names()[0],
-                                   label="Sample → linked XAI figure")
+            _legacy_samples = get_sample_names()
+            _fallback = (XAI_INDIVIDUAL_CHOICES[0] if XAI_INDIVIDUAL_CHOICES
+                         else (_legacy_samples[0] if _legacy_samples else None))
+            xai_sel = gr.Dropdown(
+                choices=(XAI_INDIVIDUAL_CHOICES if XAI_INDIVIDUAL_CHOICES else _legacy_samples),
+                value=_fallback,
+                label="Sample → linked XAI figure",
+            )
 
             with gr.Row():
                 with gr.Column():
@@ -447,4 +468,16 @@ with gr.Blocks(
 
 
 if __name__ == "__main__":
-    demo.launch(server_name="127.0.0.1", server_port=7860, share=True)
+    is_render = any(
+        os.getenv(k)
+        for k in ("RENDER", "RENDER_SERVICE_ID", "RENDER_EXTERNAL_URL", "RENDER_GIT_COMMIT")
+    )
+    port = int(os.getenv("PORT", "7860"))
+    server_name = "0.0.0.0" if is_render else "127.0.0.1"
+
+    demo.launch(
+        server_name=server_name,
+        server_port=port,
+        share=False,
+        show_error=True,
+    )
