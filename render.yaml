@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: rarenodulefl
+    runtime: python
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      # Pin Python to a stable version (avoids bleeding-edge cp314 installs).
+      - key: PYTHON_VERSION
+        value: 3.12.3
