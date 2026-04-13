@@ -209,10 +209,9 @@ This repository contains no raw CT data.
 @misc{rarenodulefl2025,
   title     = {RareNoduleFL: Federated Learning for Rare Lung Nodule Detection
                with Uncertainty-Aware Calibration and Grad-CAM++ Explainability},
-  author    = {[Your Name]},
+  author    = {[Nandika Raj Varma]},
   year      = {2025},
-  institution = {RV University},
-  note      = {EMBC 2025 Student Track}
+  institution = {RV University}
 }
 ```
 
