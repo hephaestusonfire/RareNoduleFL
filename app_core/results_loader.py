@@ -13,6 +13,7 @@ from PIL import Image
 from app_core.config import (
     FIGURES, ABLATION_CSV, STAT_TESTS_TXT,
     FROC_DATA_CSV, CALIB_STATS_CSV,
+    RESULTS_DIR,
 )
 
 
@@ -70,6 +71,37 @@ def load_result_image(key: str) -> Optional[np.ndarray]:
     """Convenience wrapper — returns None-safe image for a single figure."""
     return load_figure(key)
 
+
+# ── XAI individual figures ─────────────────────────────────────────────────────
+
+def list_xai_individual_images() -> List[Tuple[str, str]]:
+    """
+    Enumerate PNGs under results/xai_individual for the Explainability dropdown.
+    Returns a list of (label, absolute_path_str) sorted by filename.
+    """
+    xai_dir = Path(RESULTS_DIR) / "xai_individual"
+    if not xai_dir.exists():
+        return []
+
+    files = sorted([p for p in xai_dir.iterdir() if p.is_file() and p.suffix.lower() == ".png"],
+                   key=lambda p: p.name.lower())
+    out: List[Tuple[str, str]] = []
+    for p in files:
+        label = p.stem.replace("_", " ").replace("-", " ").strip()
+        label = " ".join(label.split())
+        out.append((label or p.name, str(p)))
+    return out
+
+
+def load_image_file(path: str) -> Optional[np.ndarray]:
+    """Load an image file path into a uint8 RGB numpy array."""
+    try:
+        p = Path(path)
+        if not p.exists():
+            return None
+        return np.array(Image.open(p).convert("RGB"))
+    except Exception:
+        return None
 
 # ── Ablation table ────────────────────────────────────────────────────────────
 
